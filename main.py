@@ -45,6 +45,8 @@ class Ship:
         chX=0
         chY=0
 
+    def is_cell_empty(self,chX,chY):
+        pass
     def check_coordinates(self,number_of_points,number_of_ships,type_of_player):
         try:
             for nu_of_sh in range(number_of_ships):
