@@ -55,6 +55,9 @@ class Ship:
                     b.print_board(self.current_state)
 
         except ValueError:
+            b.print_board(self.current_state)
+            print('Пожалуйста вводите только цифры от 1 до 6!')
+
             return self.check_coordinates(number_of_points,number_of_ships,type_of_player)
 
 
