@@ -1,10 +1,14 @@
+emptySign=' 0 '
+assignedSign=' ■ '
+attacked=' X '
+
 class Board:
 
     def __init__(self):
         self.X = 6
         self.Y = 6
 
-        self.bo = [[' 0 ' for i in range(self.X)] for y in range(self.Y)]
+        self.bo = [[emptySign for i in range(self.X)] for y in range(self.Y)]
 
     def create_new_board(self):
 
@@ -46,7 +50,10 @@ class Ship:
         chY=0
 
     def is_cell_empty(self,chX,chY):
-        pass
+            if current_state[chY-1][chX-1] == emptySign :
+
+
+
     def check_coordinates(self,number_of_points,number_of_ships,type_of_player):
         try:
             for nu_of_sh in range(number_of_ships):
