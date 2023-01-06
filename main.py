@@ -7,13 +7,12 @@ class Board:
     def __init__(self):
         self.X = 6
         self.Y = 6
-
         self.bo = [[emptySign for i in range(self.X)] for y in range(self.Y)]
+
     def empty_board(self):
         self.bo = [[emptySign for i in range(self.X)] for y in range(self.Y)]
+
     def create_new_board(self):
-
-
         print('=============================================')
         print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
         print('=============================================\r\n')
@@ -27,6 +26,8 @@ class Board:
         print(f'=============================================\r\n')
         create_new_board=self.bo
         return self.bo
+
+
 
     def print_board(self,bo):
         print('=============================================')
@@ -60,14 +61,44 @@ class Ship:
             if self.current_state[chY-1][chX-1] == emptySign:
                 return True
             else:
-               print(f'Данная координата уже занята!')
                return False
     def is_cells_between_one_and_six(self,chX,chY):
             if 6>=chX>0 and 6>=chY>0:
                 return True
             else:
-               print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
-               return False
+                return False
+    def is_that_cell_is_allowed_to_allocate(self,chX,chY,number_of_points,nu_of_po):
+        if (nu_of_po==1) :
+
+           if 1<chY<6:
+
+                if 1<chX<6:
+                    pass
+                elif chX==6:
+                    pass
+                elif chX==1:
+                    pass
+
+           elif chY==6:
+
+               if 1 < chX < 6:
+                   pass
+               elif chX == 6:
+                   pass
+               elif chX == 1:
+                   pass
+
+           elif chY==1:
+               if 1 < chX < 6:
+                   pass
+               elif chX == 6:
+                   pass
+               elif chX == 1:
+                   pass
+
+
+
+
 
     def check_coordinates(self,number_of_points,number_of_ships,type_of_player):
         nu_of_po=0
@@ -85,11 +116,11 @@ class Ship:
                             b.print_board(self.current_state)
                         else:
                             b.print_board(self.current_state)
-                            self.is_cell_empty(chX, chY)
+                            print(f'Данная координата уже занята!')
                             nu_of_po -= 1
                     else:
                        b.print_board(self.current_state)
-                       self.is_cells_between_one_and_six(chX, chY)
+                       print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
                        nu_of_po-=1
 
                     nu_of_po += 1
