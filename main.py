@@ -1,6 +1,8 @@
 emptySign=' 0 '
 assignedSign=' ■ '
 attacked=' X '
+checkList=[]
+lastCoordinates=[None,None]
 
 class Board:
 
@@ -67,13 +69,41 @@ class Ship:
                 return True
             else:
                 return False
-    def is_that_cell_is_allowed_to_allocate(self,chX,chY,number_of_points,nu_of_po):
-        if (nu_of_po==1) :
+    def surround_cells_check(self,checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po):
+        for val in checkList:
+            print(f'chY:{chY}:chX:{chX}:last{lastCoordinates[0]}:val0:{val[0]}:val1:{val[1]}:{lastCoordinates[0]==val}')
+            if (nu_of_po==0):
+                if (self.current_state[val[0]][val[1]] != emptySign or lastCoordinates[0]==val):
+                    print('not empty')
+                    return True
+            elif(nu_of_po==1):
+                pass
+            elif(nu_of_po==2):
+                pass
+
+        return True
+
+
+
+
+    def is_that_cell_is_allowed_to_allocate(self,chY,chX,number_of_points,nu_of_po):
+
+
 
            if 1<chY<6:
 
                 if 1<chX<6:
-                    pass
+                    checkList.clear()
+                    checkList.append([chY + 1,chX])
+                    checkList.append([chY - 1,chX])
+                    checkList.append([chY,chX + 1])
+                    checkList.append([chY,chX - 1])
+                    checkList.append([chY+1, chX + 1])
+                    checkList.append([chY-1, chX - 1])
+                    checkList.append([chY - 1, chX + 1])
+                    checkList.append([chY + 1, chX - 1])
+                    return self.surround_cells_check(checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po)
+
                 elif chX==6:
                     pass
                 elif chX==1:
@@ -110,10 +140,15 @@ class Ship:
 
                     chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) X=: '))
                     chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) Y=: '))
-                    if self.is_cells_between_one_and_six(chX,chY):
-                        if self.is_cell_empty(chX,chY):
-                            self.current_state[chY-1][chX-1]=' ■ '
-                            b.print_board(self.current_state)
+                    if self.is_cells_between_one_and_six(chY,chX):
+                        if self.is_cell_empty(chY,chX):
+                            if self.is_that_cell_is_allowed_to_allocate(chY-1,chX-1,number_of_points, nu_of_po):
+                                lastCoordinates.clear()
+                                lastCoordinates.append([chY-1,chX-1])
+                                self.current_state[chY-1][chX-1]=' ■ '
+                                b.print_board(self.current_state)
+                            else:
+                                print('errror')
                         else:
                             b.print_board(self.current_state)
                             print(f'Данная координата уже занята!')
@@ -148,6 +183,9 @@ b.create_new_board()
 
 c=Ship(b)
 c.initiate_user_ships()
+
+
+
 
 
 
