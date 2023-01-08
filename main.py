@@ -183,7 +183,7 @@ class Ship:
 
 
 
-    def check_coordinates(self,number_of_points,number_of_ships,type_of_player):
+    def check_coordinates(self,number_of_points,number_of_ships,ship_type,type_of_player):
         nu_of_po=0
         nu_of_sh=0
 
@@ -191,8 +191,8 @@ class Ship:
             while nu_of_sh < number_of_ships:
                 while nu_of_po <number_of_points:
 
-                    chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) X=: '))
-                    chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) Y=: '))
+                    chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
+                    chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
                     if self.is_cells_between_one_and_six(chY,chX):
                         chX -= 1
                         chY -= 1
@@ -224,14 +224,21 @@ class Ship:
             self.board_reinitialization(b)
             b.print_board(self.current_state)
             print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!')
-            return self.check_coordinates(number_of_points,number_of_ships,type_of_player)
+            self.initiate_user_ships()
 
 
 
     def initiate_user_ships(self):
-        self.check_coordinates(3,2,'user')
-        #check_coordinates(self, 2, 2, 'user')
-        #check_coordinates(self, 1, 4, 'user')
+        self.check_coordinates(3,1,'большого','user')
+        self.check_coordinates(2, 2, 'среднего','user')
+        self.check_coordinates(1, 4,'малого','user')
+        print('[Установка координат для кораблей игрока завершена!!!]')
+        print('Установка координат для кораблей')
+        print('Установка координат для кораблей  .')
+        print('Установка координат для кораблей  ..')
+        print('Установка координат для кораблей  ...')
+        print('[Установка координат для кораблей компьютера завершенa!!!]')
+        print('Игра началась!')
 
 
 
