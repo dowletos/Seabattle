@@ -3,18 +3,23 @@ assignedSign=' ■ '
 attacked=' X '
 checkList=[]
 lastCoordinates=[None,None]
+user='user'
+comp='comp'
 
 class Board:
 
     def __init__(self):
+        self.bo={}
         self.X = 6
         self.Y = 6
-        self.bo = [[emptySign for i in range(self.X)] for y in range(self.Y)]
+        self.bo[user] = [[emptySign for i in range(self.X)] for y in range(self.Y)]
+        self.bo[comp] = [[emptySign for i in range(self.X)] for y in range(self.Y)]
 
-    def empty_board(self):
-        self.bo = [[emptySign for i in range(self.X)] for y in range(self.Y)]
 
-    def create_new_board(self):
+    def empty_board(self,user_type):
+        self.bo[user_type] = [[emptySign for i in range(self.X)] for y in range(self.Y)]
+
+    def create_new_board(self,user_type):
         print('=============================================')
         print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
         print('=============================================\r\n')
@@ -23,15 +28,15 @@ class Board:
             print(f'         ', end='\r\n')
             print(f'   {i+1}  | ',end='')
             for y in range(self.Y):
-                print(self.bo[i][y],end=' | ')
+                print(self.bo[user_type][i][y],end=' | ')
         print('')
         print(f'=============================================\r\n')
-        create_new_board=self.bo
-        return self.bo
+        create_new_board=self.bo[user_type]
+        return self.bo[user_type]
 
 
 
-    def print_board(self,bo):
+    def print_board(self,bo,user_type):
         print('=============================================')
         print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
         print('=============================================\r\n')
@@ -40,7 +45,7 @@ class Board:
             print(f'         ', end='\r\n')
             print(f'   {i+1}  | ',end='')
             for y in range(self.Y):
-                print(self.bo[i][y],end=' | ')
+                print(self.bo[user_type][i][y],end=' | ')
         print('')
         print(f'=============================================\r\n')
         return bo
@@ -48,14 +53,14 @@ class Board:
 
 class Ship:
 
-    def __init__(self,b):
-        self.current_state=b.bo
+    def __init__(self,b,user_type):
+        self.current_state=b.bo[user_type]
         chX=0
         chY=0
 
-    def board_reinitialization(self,b):
-        b.empty_board()
-        self.current_state = b.bo
+    def board_reinitialization(self,b,user_type):
+        b.empty_board(user_type)
+        self.current_state = b.bo[user_type]
         chX = 0
         chY = 0
 
@@ -69,24 +74,25 @@ class Ship:
                 return True
             else:
                 return False
-    def surround_cells_check(self,checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po):
+    def surround_cells_check(self,checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po,user_type):
         for val in checkList:
+            #
             print(f'chY:{chY}:chX:{chX}:last{lastCoordinates[0]}:val0:{val[0]}:val1:{val[1]}:{lastCoordinates[0]==val}')
             if (nu_of_po==0):
                 if (self.current_state[val[0]][val[1]] != emptySign ):
-                    b.print_board(self.current_state)
+                    b.print_board(self.current_state,user_type)
                     print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координы! ')
                     return False
             elif(nu_of_po==1):
                 if (self.current_state[val[0]][val[1]] != emptySign):
                     if  lastCoordinates[0] != val:
-                        b.print_board(self.current_state)
+                        b.print_board(self.current_state, user_type)
                         print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координы!')
                         return False
             elif(nu_of_po==2):
                 if (self.current_state[val[0]][val[1]] != emptySign):
                     if lastCoordinates[0] != val:
-                        b.print_board(self.current_state)
+                        b.print_board(self.current_state, user_type)
                         print('Корабли должны находится на расстоянии минимум одна клетка друг от друга.Введите новые координы!')
                         return False
 
@@ -95,7 +101,7 @@ class Ship:
 
 
 
-    def is_that_cell_is_allowed_to_allocate(self,chY,chX,number_of_points,nu_of_po):
+    def is_that_cell_is_allowed_to_allocate(self,chY,chX,number_of_points,nu_of_po,user_type):
 
 
            if 0<chY<5:
@@ -111,7 +117,7 @@ class Ship:
                     checkList.append([chY + 1, chX - 1])  #6
                     checkList.append([chY, chX - 1])      #7
                     checkList.append([chY - 1, chX - 1])  #8
-                    return self.surround_cells_check(checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po)
+                    return self.surround_cells_check(checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po,user_type)
 
                 elif chX==5:
                     checkList.clear()
@@ -120,7 +126,7 @@ class Ship:
                     checkList.append([chY + 1, chX - 1])  # 6
                     checkList.append([chY, chX - 1])      # 7
                     checkList.append([chY - 1, chX - 1])  # 8
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
                 elif chX==0:
 
@@ -131,7 +137,7 @@ class Ship:
                     checkList.append([chY + 1, chX + 1])  # 4
                     checkList.append([chY + 1, chX])      # 5
 
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
            elif chY==5:
 
@@ -142,19 +148,19 @@ class Ship:
                     checkList.append([chY, chX + 1])      # 3
                     checkList.append([chY, chX - 1])      # 7
                     checkList.append([chY - 1, chX - 1])  # 8
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
                elif chX == 5:
                     checkList.clear()
                     checkList.append([chY - 1, chX])      # 1
                     checkList.append([chY, chX - 1])      # 7
                     checkList.append([chY - 1, chX - 1])  # 8
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
                elif chX == 0:
                     checkList.clear()
                     checkList.append([chY - 1, chX])  # 1
                     checkList.append([chY - 1, chX + 1])  # 2
                     checkList.append([chY, chX + 1])  # 3
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
            elif chY==0:
 
@@ -165,54 +171,55 @@ class Ship:
                     checkList.append([chY + 1, chX])      # 5
                     checkList.append([chY + 1, chX - 1])  # 6
                     checkList.append([chY, chX - 1])      # 7
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
                elif chX == 5:
                     checkList.clear()
                     checkList.append([chY + 1, chX])      # 5
                     checkList.append([chY + 1, chX - 1])  # 6
                     checkList.append([chY, chX - 1])      # 7
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
                elif chX == 0:
                     checkList.clear()
                     checkList.append([chY, chX + 1])      # 3
                     checkList.append([chY + 1, chX + 1])  # 4
                     checkList.append([chY + 1, chX])      # 5
-                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
 
 
 
 
-    def check_coordinates(self,number_of_points,number_of_ships,ship_type,type_of_player):
+    def check_coordinates(self,number_of_points,number_of_ships,ship_type,user_type):
         nu_of_po=0
         nu_of_sh=0
 
         try:
             while nu_of_sh < number_of_ships:
                 while nu_of_po <number_of_points:
+                    if user_type=='user':
+                        chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
+                        chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
 
-                    chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
-                    chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
                     if self.is_cells_between_one_and_six(chY,chX):
                         chX -= 1
                         chY -= 1
 
                         if self.is_cell_empty(chY,chX):
 
-                            if self.is_that_cell_is_allowed_to_allocate(chY,chX,number_of_points, nu_of_po):
+                            if self.is_that_cell_is_allowed_to_allocate(chY,chX,number_of_points, nu_of_po,user_type):
                                 lastCoordinates.clear()
                                 lastCoordinates.append([chY,chX])
                                 self.current_state[chY][chX]=' ■ '
-                                b.print_board(self.current_state)
+                                b.print_board(self.current_state,user_type)
                             else:
                                 nu_of_po -= 1
 
                         else:
-                            b.print_board(self.current_state)
+                            b.print_board(self.current_state,user_type)
                             print(f'Данная координата уже занята!')
                             nu_of_po -= 1
                     else:
-                       b.print_board(self.current_state)
+                       b.print_board(self.current_state,user_type)
                        print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
                        nu_of_po-=1
 
@@ -221,33 +228,28 @@ class Ship:
                 nu_of_po=0
 
         except ValueError:
-            self.board_reinitialization(b)
-            b.print_board(self.current_state)
+            self.board_reinitialization(b,user_type)
+            b.print_board(self.current_state,user_type)
             print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!')
-            self.initiate_user_ships()
+            self.initiate_user_ships(user_type)
 
 
 
-    def initiate_user_ships(self):
-        self.check_coordinates(3,1,'большого','user')
-        self.check_coordinates(2, 2, 'среднего','user')
-        self.check_coordinates(1, 4,'малого','user')
+    def initiate_user_ships(self,user_type):
+        self.check_coordinates(3,1,'большого',user_type)
+        self.check_coordinates(2, 2, 'среднего',user_type)
+        self.check_coordinates(1, 4,'малого',user_type)
         print('[Установка координат для кораблей игрока завершена!!!]')
-        print('Установка координат для кораблей')
-        print('Установка координат для кораблей  .')
-        print('Установка координат для кораблей  ..')
-        print('Установка координат для кораблей  ...')
-        print('[Установка координат для кораблей компьютера завершенa!!!]')
-        print('Игра началась!')
+
 
 
 
 
 b=Board()
-b.create_new_board()
+b.create_new_board(user)
 
-c=Ship(b)
-c.initiate_user_ships()
+c=Ship(b,user)
+c.initiate_user_ships(user)
 
 
 
