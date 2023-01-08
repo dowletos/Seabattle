@@ -228,14 +228,14 @@ class Ship:
                     return self.double_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
 
-
+    def generateCoordinates(self):
+        pass
 
 
     def check_coordinates(self,number_of_points,number_of_ships,ship_type,user_type):
         nu_of_po=0
         nu_of_sh=0
-        attempts_count=0
-        chY=random.randint(1,6-number_of_points)
+
 
         try:
             while nu_of_sh < number_of_ships:
@@ -244,11 +244,8 @@ class Ship:
                         chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
                         chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
                     else:
-                        attempts_count+=1
-
-
-
-
+                        chY=random.randint(1,6)
+                        chX=random.randint(1,6)-nu_of_po
 
 
                     if self.is_cells_between_one_and_six(chY,chX):
