@@ -59,12 +59,12 @@ class Ship:
         chX = 0
         chY = 0
 
-    def is_cell_empty(self,chX,chY):
-            if self.current_state[chY-1][chX-1] == emptySign:
+    def is_cell_empty(self,chY,chX):
+            if self.current_state[chY][chX] == emptySign:
                 return True
             else:
                return False
-    def is_cells_between_one_and_six(self,chX,chY):
+    def is_cells_between_one_and_six(self,chY,chX):
             if 6>=chX>0 and 6>=chY>0:
                 return True
             else:
@@ -73,13 +73,22 @@ class Ship:
         for val in checkList:
             print(f'chY:{chY}:chX:{chX}:last{lastCoordinates[0]}:val0:{val[0]}:val1:{val[1]}:{lastCoordinates[0]==val}')
             if (nu_of_po==0):
-                if (self.current_state[val[0]][val[1]] != emptySign or lastCoordinates[0]==val):
-                    print('not empty')
-                    return True
+                if (self.current_state[val[0]][val[1]] != emptySign ):
+                    b.print_board(self.current_state)
+                    print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координы! ')
+                    return False
             elif(nu_of_po==1):
-                pass
+                if (self.current_state[val[0]][val[1]] != emptySign):
+                    if  lastCoordinates[0] != val:
+                        b.print_board(self.current_state)
+                        print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координы!')
+                        return False
             elif(nu_of_po==2):
-                pass
+                if (self.current_state[val[0]][val[1]] != emptySign):
+                    if lastCoordinates[0] != val:
+                        b.print_board(self.current_state)
+                        print('Корабли должны находится на расстоянии минимум одна клетка друг от друга.Введите новые координы!')
+                        return False
 
         return True
 
@@ -89,42 +98,86 @@ class Ship:
     def is_that_cell_is_allowed_to_allocate(self,chY,chX,number_of_points,nu_of_po):
 
 
+           if 0<chY<5:
 
-           if 1<chY<6:
+                if 0<chX<5:
 
-                if 1<chX<6:
                     checkList.clear()
-                    checkList.append([chY + 1,chX])
-                    checkList.append([chY - 1,chX])
-                    checkList.append([chY,chX + 1])
-                    checkList.append([chY,chX - 1])
-                    checkList.append([chY+1, chX + 1])
-                    checkList.append([chY-1, chX - 1])
-                    checkList.append([chY - 1, chX + 1])
-                    checkList.append([chY + 1, chX - 1])
+                    checkList.append([chY - 1,chX])       #1
+                    checkList.append([chY - 1, chX + 1])  #2
+                    checkList.append([chY,chX + 1])       #3
+                    checkList.append([chY + 1, chX + 1])  #4
+                    checkList.append([chY + 1, chX])      #5
+                    checkList.append([chY + 1, chX - 1])  #6
+                    checkList.append([chY, chX - 1])      #7
+                    checkList.append([chY - 1, chX - 1])  #8
                     return self.surround_cells_check(checkList,chY,chX,lastCoordinates,number_of_points,nu_of_po)
 
-                elif chX==6:
-                    pass
-                elif chX==1:
-                    pass
+                elif chX==5:
+                    checkList.clear()
+                    checkList.append([chY - 1, chX])      # 1
+                    checkList.append([chY + 1, chX])      # 5
+                    checkList.append([chY + 1, chX - 1])  # 6
+                    checkList.append([chY, chX - 1])      # 7
+                    checkList.append([chY - 1, chX - 1])  # 8
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
 
-           elif chY==6:
+                elif chX==0:
 
-               if 1 < chX < 6:
-                   pass
-               elif chX == 6:
-                   pass
-               elif chX == 1:
-                   pass
+                    checkList.clear()
+                    checkList.append([chY - 1, chX])      # 1
+                    checkList.append([chY - 1, chX + 1])  # 2
+                    checkList.append([chY, chX + 1])      # 3
+                    checkList.append([chY + 1, chX + 1])  # 4
+                    checkList.append([chY + 1, chX])      # 5
 
-           elif chY==1:
-               if 1 < chX < 6:
-                   pass
-               elif chX == 6:
-                   pass
-               elif chX == 1:
-                   pass
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+
+           elif chY==5:
+
+               if 0 < chX < 5:
+                    checkList.clear()
+                    checkList.append([chY - 1, chX])      # 1
+                    checkList.append([chY - 1, chX + 1])  # 2
+                    checkList.append([chY, chX + 1])      # 3
+                    checkList.append([chY, chX - 1])      # 7
+                    checkList.append([chY - 1, chX - 1])  # 8
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+               elif chX == 5:
+                    checkList.clear()
+                    checkList.append([chY - 1, chX])      # 1
+                    checkList.append([chY, chX - 1])      # 7
+                    checkList.append([chY - 1, chX - 1])  # 8
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+               elif chX == 0:
+                    checkList.clear()
+                    checkList.append([chY - 1, chX])  # 1
+                    checkList.append([chY - 1, chX + 1])  # 2
+                    checkList.append([chY, chX + 1])  # 3
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+
+           elif chY==0:
+
+               if 0 < chX < 5:
+                    checkList.clear()
+                    checkList.append([chY, chX + 1])      # 3
+                    checkList.append([chY + 1, chX + 1])  # 4
+                    checkList.append([chY + 1, chX])      # 5
+                    checkList.append([chY + 1, chX - 1])  # 6
+                    checkList.append([chY, chX - 1])      # 7
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+               elif chX == 5:
+                    checkList.clear()
+                    checkList.append([chY + 1, chX])      # 5
+                    checkList.append([chY + 1, chX - 1])  # 6
+                    checkList.append([chY, chX - 1])      # 7
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
+               elif chX == 0:
+                    checkList.clear()
+                    checkList.append([chY, chX + 1])      # 3
+                    checkList.append([chY + 1, chX + 1])  # 4
+                    checkList.append([chY + 1, chX])      # 5
+                    return self.surround_cells_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po)
 
 
 
@@ -141,14 +194,19 @@ class Ship:
                     chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) X=: '))
                     chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} корабля №{nu_of_sh+1} (3 клетки) Y=: '))
                     if self.is_cells_between_one_and_six(chY,chX):
+                        chX -= 1
+                        chY -= 1
+
                         if self.is_cell_empty(chY,chX):
-                            if self.is_that_cell_is_allowed_to_allocate(chY-1,chX-1,number_of_points, nu_of_po):
+
+                            if self.is_that_cell_is_allowed_to_allocate(chY,chX,number_of_points, nu_of_po):
                                 lastCoordinates.clear()
-                                lastCoordinates.append([chY-1,chX-1])
-                                self.current_state[chY-1][chX-1]=' ■ '
+                                lastCoordinates.append([chY,chX])
+                                self.current_state[chY][chX]=' ■ '
                                 b.print_board(self.current_state)
                             else:
-                                print('errror')
+                                nu_of_po -= 1
+
                         else:
                             b.print_board(self.current_state)
                             print(f'Данная координата уже занята!')
@@ -171,7 +229,7 @@ class Ship:
 
 
     def initiate_user_ships(self):
-        self.check_coordinates(3,1,'user')
+        self.check_coordinates(3,2,'user')
         #check_coordinates(self, 2, 2, 'user')
         #check_coordinates(self, 1, 4, 'user')
 
