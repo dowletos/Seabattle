@@ -4,6 +4,7 @@ emptySign=' 0 '
 assignedSign=' ■ '
 attacked=' X '
 checkList=[]
+user_names={'user':' Игрока','comp':' Компьютера'}
 lastCoordinates=[None,None]
 user='user'
 comp='comp'
@@ -53,17 +54,17 @@ class Board:
             print(f'=============================================\r\n')
             return bo
         elif user_type==comp:
-            print('=============================================')
-            print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
-            print('=============================================\r\n')
-            print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ', end='')
-            for i in range(self.X):
-                print(f'         ', end='\r\n')
-                print(f'   {i + 1}  | ', end='')
-                for y in range(self.Y):
-                    print(self.bo[user_type][i][y], end=' | ')
-            print('')
-            print(f'=============================================\r\n')
+            #print('=============================================')
+            #print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
+            #print('=============================================\r\n')
+            #print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ', end='')
+            #for i in range(self.X):
+            #    print(f'         ', end='\r\n')
+            #    print(f'   {i + 1}  | ', end='')
+            #    for y in range(self.Y):
+            #        print(self.bo[user_type][i][y], end=' | ')
+            #print('')
+            #print(f'=============================================\r\n')
             return bo
 
 
@@ -98,21 +99,24 @@ class Ship:
             if (nu_of_po==0):
                 if (self.current_state[val[0]][val[1]] != emptySign and self.current_state[val[0]][val[1]] ==assignedSign ):
                     b.print_board(self.current_state,user_type)
-                    print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
+                    if user_type != 'comp':
+                        print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
                     return False
 
             elif(nu_of_po==1):
                 if (self.current_state[val[0]][val[1]] != emptySign and self.current_state[val[0]][val[1]] ==assignedSign ):
                     if  lastCoordinates[0] != val:
                         b.print_board(self.current_state, user_type)
-                        print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
+                        if user_type != 'comp':
+                            print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
                         return False
 
             elif(nu_of_po==2):
                 if (self.current_state[val[0]][val[1]] != emptySign and self.current_state[val[0]][val[1]] ==assignedSign ):
                     if lastCoordinates[0] != val:
                         b.print_board(self.current_state, user_type)
-                        print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
+                        if user_type != 'comp':
+                            print('Корабли должны находится на расстоянии минимум одна клетка друг от друга. Введите новые координаты! ')
                         return False
 
         return True
@@ -135,7 +139,8 @@ class Ship:
 
 
         b.print_board(self.current_state, user_type)
-        print('Координаты каждой из частей одного коробля должны находится рядом (в одной из соседних ячеек)! Введите правильные координаты')
+        if user_type != 'comp':
+            print('Координаты каждой из частей одного коробля должны находится рядом (в одной из соседних ячеек)! Введите правильные координаты')
         return False
 
 
@@ -228,14 +233,56 @@ class Ship:
                     return self.double_check(checkList, chY, chX, lastCoordinates, number_of_points, nu_of_po,user_type)
 
 
-    def generateCoordinates(self):
-        pass
+    def generate_random_coordinates(self,number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh):
+        X=0
+        Y=0
+        if number_of_points==3:
+            if nu_of_po==0:
+                X=1
+                Y=random.randint(1,6)
+            elif nu_of_po==1:
+                X=2
+                Y=chY+1
+            elif nu_of_po==2:
+                X=3
+                Y=chY+1
+
+        if (number_of_ships==2):
+                if number_of_points==2:
+                    if nu_of_po==0:
+                        X=2+nu_of_sh
+                        Y=random.randint(1,6)
+                    elif nu_of_po==1:
+                        X=3+nu_of_sh
+                        Y=chY+1
+
+        if (number_of_ships==4):
+                if number_of_points==1:
+
+                        X=random.randint(1,6)
+                        Y=random.randint(1,6)
+
+
+
+
+
+
+        return Y, X
+
+
+
+
+
+
+
+
 
 
     def check_coordinates(self,number_of_points,number_of_ships,ship_type,user_type):
         nu_of_po=0
         nu_of_sh=0
-
+        chX=0
+        chY=0
 
         try:
             while nu_of_sh < number_of_ships:
@@ -244,8 +291,7 @@ class Ship:
                         chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
                         chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
                     else:
-                        chY=random.randint(1,6)
-                        chX=random.randint(1,6)-nu_of_po
+                       chY,chX=self.generate_random_coordinates(number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh)
 
 
                     if self.is_cells_between_one_and_six(chY,chX):
@@ -264,21 +310,25 @@ class Ship:
 
                         else:
                             b.print_board(self.current_state,user_type)
-                            print(f'Данная координата уже занята!')
+                            if user_type!='comp':
+                                print(f'Данная координата уже занята!')
                             nu_of_po -= 1
                     else:
                        b.print_board(self.current_state,user_type)
-                       print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
+                       if user_type != 'comp':
+                            print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
                        nu_of_po-=1
 
                     nu_of_po += 1
                 nu_of_sh+=1
                 nu_of_po=0
 
+
         except ValueError:
             self.board_reinitialization(b,user_type)
             b.print_board(self.current_state,user_type)
-            print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!')
+            if user_type != 'comp':
+                print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!')
             self.initiate_user_ships(user_type)
 
 
@@ -287,7 +337,7 @@ class Ship:
         self.check_coordinates(3,1,'большого',user_type)
         self.check_coordinates(2, 2, 'среднего',user_type)
         self.check_coordinates(1, 4,'малого',user_type)
-        print('[Установка координат для кораблей игрока завершена!!!]')
+        print(f'[Установка координат для кораблей {user_names[user_type]} завершена!!!]')
 
 
 
@@ -297,14 +347,11 @@ b=Board()
 b.create_new_board(user)
 
 
-
-
-c=Ship(b,comp)
-c.initiate_user_ships(comp)
-
-print('xxxx=========================================================================================')
+print('=========================================================================================')
 u=Ship(b,user)
 u.initiate_user_ships(user)
+c=Ship(b,comp)
+c.initiate_user_ships(comp)
 
 
 
