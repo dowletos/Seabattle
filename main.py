@@ -2,12 +2,14 @@ import random
 
 emptySign=' 0 '
 assignedSign=' ■ '
-attacked=' X '
+exploded=' X '
+missed=' T '
 checkList=[]
-user_names={'user':' Игрока','comp':' Компьютера'}
+user_names={'user':' [ Игрока ] ','comp':' [ Компьютера ] '}
 lastCoordinates=[None,None]
 user='user'
 comp='comp'
+hid=False
 
 class Board:
 
@@ -53,18 +55,18 @@ class Board:
             print('')
             print(f'=============================================\r\n')
             return bo
-        elif user_type==comp:
-            #print('=============================================')
-            #print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
-            #print('=============================================\r\n')
-            #print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ', end='')
-            #for i in range(self.X):
-            #    print(f'         ', end='\r\n')
-            #    print(f'   {i + 1}  | ', end='')
-            #    for y in range(self.Y):
-            #        print(self.bo[user_type][i][y], end=' | ')
-            #print('')
-            #print(f'=============================================\r\n')
+        elif user_type==comp and hid==False:
+            print('=============================================')
+            print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
+            print('=============================================\r\n')
+            print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ', end='')
+            for i in range(self.X):
+                print(f'         ', end='\r\n')
+                print(f'   {i + 1}  | ', end='')
+                for y in range(self.Y):
+                    print(self.bo[user_type][i][y], end=' | ')
+            print('')
+            print(f'=============================================\r\n')
             return bo
 
 
@@ -283,15 +285,21 @@ class Ship:
         nu_of_sh=0
         chX=0
         chY=0
+        con=0
 
         try:
             while nu_of_sh < number_of_ships:
                 while nu_of_po <number_of_points:
                     if user_type=='user':
-                        chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) X=: '))
-                        chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) Y=: '))
+                        chX = int(input(f'Пожалуйста введите координату {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) для {user_names[user_type]} X=: '))
+                        chY = int(input(f'Пожалуйста введите координаты {nu_of_po+1} {ship_type} корабля №{nu_of_sh+1} ({number_of_points} клетки) для {user_names[user_type]} Y=: '))
                     else:
-                       chY,chX=self.generate_random_coordinates(number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh)
+                        con+=1
+
+                        if con<=15:
+                            chY,chX=self.generate_random_coordinates(number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh)
+                        else:
+                            con=0
 
 
                     if self.is_cells_between_one_and_six(chY,chX):
@@ -346,12 +354,17 @@ class Ship:
 b=Board()
 b.create_new_board(user)
 
-
-print('=========================================================================================')
-u=Ship(b,user)
-u.initiate_user_ships(user)
 c=Ship(b,comp)
 c.initiate_user_ships(comp)
+
+u=Ship(b,user)
+u.initiate_user_ships(user)
+
+
+
+print('[---------------------------Начало игры!----------------------]')
+
+
 
 
 
