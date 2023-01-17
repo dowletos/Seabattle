@@ -44,6 +44,7 @@ class Board:
     def print_board(self,bo,user_type):
         if (user_type==user):
             print('=============================================')
+            print('==============Карта пользователя=============')
             print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
             print('=============================================\r\n')
             print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ',end='')
@@ -57,6 +58,7 @@ class Board:
             return bo
         elif user_type==comp and hid==False:
             print('=============================================')
+            print('===============Карта Компьютера==============')
             print(f' W E L C O M E  T O  S E A B A T T L E ! ! ! ')
             print('=============================================\r\n')
             print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ', end='')
@@ -68,6 +70,36 @@ class Board:
             print('')
             print(f'=============================================\r\n')
             return bo
+    def print_mearged_board (self, user_set,comp_set):
+                print('', end='\r\n')
+                print('=============================================      ',end='')
+                print('=============================================')
+                print('==============Карта пользователя=============      ',end='')
+                print('===============Карта компьютера==============')
+                print(f'                        W E L C O M E  T O  S E A B A T T L E ! ! !                             ')
+                print('=============================================      ',end='')
+                print('=============================================\r\n')
+                print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  |       ', end='')
+                print('   y\X|  1  |  2  |  3  |  4  |  5  |  6  | ')
+                for i in range(self.X):
+
+                    print(f'         ', end='\r\n')
+                    print(f'   {i + 1}  | ', end='')
+
+                    for y in range(self.Y):
+                        print(self.bo[user][i][y], end=' | ')
+                    print(f'      ', end='')
+
+                    print(f'   {i + 1}  | ', end='')
+                    for y in range(self.Y):
+                        print(self.bo[comp][i][y], end=' | ')
+
+                print('',end='\r\n')
+                print(f'  ================================================',end='')
+                print(f'=============================================\r\n')
+
+
+
 
 
 
@@ -342,17 +374,103 @@ class Ship:
 
 
     def initiate_user_ships(self,user_type):
+
         self.check_coordinates(3,1,'большого',user_type)
-        self.check_coordinates(2, 2, 'среднего',user_type)
-        self.check_coordinates(1, 4,'малого',user_type)
+        #self.check_coordinates(2, 2, 'среднего',user_type)
+        #self.check_coordinates(1, 4,'малого',user_type)
         print(f'[Установка координат для кораблей {user_names[user_type]} завершена!!!]')
 
 
+
+class StartGame():
+    def __init__(self,user_set,comp_set):
+        self.user_set=user_set
+        self.comp_set=comp_set
+        self.gameController()
+        b.print_merged_board(self.user_set,self.comp_set)
+
+    def gameController(self):
+
+        self.attack_comp_positions()
+
+    def is_cells_between_one_and_six(self, chY, chX):
+        if 5 >= chX >= 0 and 5 >= chY >= 0:
+            return True
+        else:
+            return False
+    @property
+    def check_user_positions(self):
+        if assignedSign in str(self.user_set):
+            return True
+        else:
+            print('[------------------------------Внимание-------------------------]')
+            print('[---------------------------Игрок победил!----------------------]')
+            print('[--------------------------------!!!----------------------------]')
+    @property
+    def check_comp_positions(self):
+        if assignedSign in str(self.comp_set):
+            return True
+        else:
+            print('[-----------------------------Внимание--------------------------]')
+            print('[------------------------Компьютер победил!---------------------]')
+            print('[-------------------------------!!!-----------------------------]')
+    def attack_comp_positions(self):
+
+        while(self.check_comp_positions):
+            chX = int(input(f'Пожалуйста введите координату X=: '))-1
+            chY = int(input(f'Пожалуйста введите координаты Y=: '))-1
+
+            if self.is_cells_between_one_and_six( chY, chX):
+                if self.comp_set[chY][chX]==assignedSign:
+                    self.comp_set[chY][chX]=exploded
+                    b.print_mearged_board(self.user_set,self.comp_set)
+                    print('Вы подбили корабль или часть корабля!!!')
+                elif self.comp_set[chY][chX]==emptySign:
+                     self.comp_set[chY][chX]=missed
+                     print('Вы Промазали. Ход Компьютера!!!')
+                     self.attack_user_positions()
+                     break
+                elif self.comp_set[chY][chX]==exploded:
+                    print("Вы уже делали данный ход! Попробуйте другие координаты!")
+                    continue
+                elif self.comp_set[chY][chX]==missed:
+                    print("Вы уже делали данный ход! Попробуйте другие координаты!")
+                    continue
+            else: print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
+
+
+        #emptySign = ' 0 '
+        #assignedSign = ' ■ '
+        #exploded = ' X '
+        #missed = ' T '
+
+    def attack_user_positions(self):
+        while (self.check_user_positions):
+            chX = random.randint(1,6)-1
+            chY = random.randint(1,6)-1
+            print('ГЕНЕРАЦИЯ КООРДИНАТ ДЛЯ АТАКИ')
+            if self.user_set[chY][chX] == assignedSign:
+                self.user_set[chY][chX] = exploded
+                b.print_mearged_board(self.user_set, self.comp_set)
+                print('Компьютер подбил Ваш корабль или часть вашего корабля!!!')
+            elif self.user_set[chY][chX] == emptySign:
+                self.user_set[chY][chX] = missed
+                b.print_mearged_board(self.user_set,self.comp_set)
+                print('Компьютер промазал. Ваш ход!!!')
+                self.attack_comp_positions()
+
+            elif self.user_set[chY][chX] == exploded:
+                continue
+            elif self.user_set[chY][chX] == missed:
+                continue
+            b.print_mearged_board(self.user_set,self.comp_set)
 
 
 
 b=Board()
 b.create_new_board(user)
+
+hid=True
 
 c=Ship(b,comp)
 c.initiate_user_ships(comp)
@@ -361,8 +479,11 @@ u=Ship(b,user)
 u.initiate_user_ships(user)
 
 
+xgame=StartGame(u.current_state,c.current_state)
 
-print('[---------------------------Начало игры!----------------------]')
+
+
+print('[---------------------------Конец игры!----------------------]')
 
 
 
