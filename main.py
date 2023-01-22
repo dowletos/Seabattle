@@ -12,6 +12,7 @@ user='user'
 comp='comp'
 hid=False
 
+
 class Board:
 
     def __init__(self):
@@ -108,6 +109,8 @@ class Ship:
 
     def __init__(self,b,user_type):
         self.current_state=b.bo[user_type]
+        self.GameActive={}
+        self.GameActive[user_type]= True
         chX=0
         chY=0
 
@@ -319,67 +322,84 @@ class Ship:
         chX=0
         chY=0
         con=0
+        conCycleCount=0
 
         try:
-            while nu_of_sh < number_of_ships:
-                while nu_of_po <number_of_points:
-                    if user_type=='user':
-                        chX = int(input(f'Уважаемый {user_names[user_type]}! Пожалуйста введите координату {nu_of_po+1} для {ship_type} корабля №{nu_of_sh+1} состоящего из {number_of_points} координат X=: '))
-                        chY = int(input(f'Уважаемый {user_names[user_type]}! Пожалуйста введите координату {nu_of_po+1} для {ship_type} корабля №{nu_of_sh+1} состоящего из {number_of_points} координат Y=: '))
-                    else:
-                        con+=1
 
-                        if con<=15:
-                            chY,chX=self.generate_random_coordinates(number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh)
+                while nu_of_sh < number_of_ships and self.GameActive[user_type]:
+                    while nu_of_po <number_of_points and self.GameActive[user_type]:
+                        #print(self.GameActive)
+                        if user_type=='user':
+
+                            chX = int(input(f'Уважаемый {user_names[user_type]}! Пожалуйста введите координату {nu_of_po+1} для {ship_type} корабля №{nu_of_sh+1} состоящего из {number_of_points} координат X=: '))
+                            chY = int(input(f'Уважаемый {user_names[user_type]}! Пожалуйста введите координату {nu_of_po+1} для {ship_type} корабля №{nu_of_sh+1} состоящего из {number_of_points} координат Y=: '))
                         else:
-                            con=0
+                            con+=1
+                            #print(f'con:{con}:concycle:{conCycleCount}')
+                            if con<=15:
 
+                                if(conCycleCount<15):
+                                    chY,chX=self.generate_random_coordinates(number_of_points,nu_of_po,chY,chX,number_of_ships,nu_of_sh)
+                                else:
+                                    conCycleCount=0
+                                    self.board_reinitialization(b, user_type)
 
-                    if self.is_cells_between_one_and_six(chY,chX):
-                        chX -= 1
-                        chY -= 1
+                                    self.initiate_user_ships(user_type)
 
-                        if self.is_cell_empty(chY,chX):
-
-                            if self.is_that_cell_is_allowed_to_allocate(chY,chX,number_of_points, nu_of_po,user_type):
-                                lastCoordinates.clear()
-                                lastCoordinates.append([chY,chX])
-                                self.current_state[chY][chX]=' ■ '
-                                b.print_board(self.current_state,user_type)
                             else:
+                                con=0
+                                conCycleCount += 1
+
+
+                        if self.is_cells_between_one_and_six(chY,chX):
+                            chX -= 1
+                            chY -= 1
+
+                            if self.is_cell_empty(chY,chX):
+
+                                if self.is_that_cell_is_allowed_to_allocate(chY,chX,number_of_points, nu_of_po,user_type):
+                                    lastCoordinates.clear()
+                                    lastCoordinates.append([chY,chX])
+                                    self.current_state[chY][chX]=' ■ '
+                                    b.print_board(self.current_state,user_type)
+                                else:
+                                    nu_of_po -= 1
+
+                            else:
+                                b.print_board(self.current_state,user_type)
+                                if user_type!='comp':
+                                    print(f'Данная координата уже занята!')
                                 nu_of_po -= 1
-
                         else:
-                            b.print_board(self.current_state,user_type)
-                            if user_type!='comp':
-                                print(f'Данная координата уже занята!')
-                            nu_of_po -= 1
-                    else:
-                       b.print_board(self.current_state,user_type)
-                       if user_type != 'comp':
-                            print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!')
-                       nu_of_po-=1
+                           b.print_board(self.current_state,user_type)
+                           if user_type != 'comp':
+                                print(f'Неправильно введены координаты. Пожалуйста введите числа от 1 до 6!_')
+                           nu_of_po-=1
 
-                    nu_of_po += 1
-                nu_of_sh+=1
-                nu_of_po=0
-
+                        nu_of_po += 1
+                    nu_of_sh+=1
+                    nu_of_po=0
 
         except ValueError:
             self.board_reinitialization(b,user_type)
             b.print_board(self.current_state,user_type)
             if user_type != 'comp':
-                print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!')
-            self.initiate_user_ships(user_type)
+                print('Пожалуйста вводите заново все координаты. Разрешены только цифры от 1 до 6!__')
+                self.initiate_user_ships(user_type)
+
+
+
 
 
 
     def initiate_user_ships(self,user_type):
-
+        self.GameActive[user_type] = True
         self.check_coordinates(3,1,'большого',user_type)
         self.check_coordinates(2, 2, 'среднего',user_type)
         self.check_coordinates(1, 4,'малого',user_type)
         print(f'[Установка координат для кораблей {user_names[user_type]} завершена!!!]')
+        self.GameActive[user_type]=False
+
 
 
 
