@@ -10,4 +10,4 @@ You will need a python programming language installed on your PC/laptop or other
 <h3>**OS supported:**</h3>
 Windows, Mac, Linux.
 
-<h3>**Interfaces languages supported: Russian**</h3>
+  <h3>**Interface languages supported:</h3> Russian**
